@@ -2,6 +2,7 @@ using GamesApi.Models;
 using GamesApi.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.Versioning;
+using System.Runtime.CompilerServices;
 namespace GamesApi.Controllers;
 
 [ApiController]
@@ -12,6 +13,12 @@ public class GamesController : ControllerBase
     public ActionResult<List<Game>> GetAll()
     {
         return Ok(GamesStore.Games);
+    }
+    [HttpGet("favourites")]
+    public ActionResult<List<Game>> GetFavourites()
+    {
+        var favourites = GamesStore.Games.Where(g => g.IsFavourite).ToList();
+        return Ok(favourites);
     }
     [HttpGet("{id}")]
     public ActionResult<Game> GetById(int id)
@@ -28,7 +35,12 @@ public class GamesController : ControllerBase
     {
         game.Id = GamesStore.NextId();
         GamesStore.Games.Add(game);
+        if (string.IsNullOrWhiteSpace(game.Title))
+        {
+            return BadRequest(new { message = "Название игры не может быть пустым" });
+        }
         return CreatedAtAction(nameof(GetById), new { id = game.Id }, game);
+
     }
     [HttpDelete("{id}")]
     public ActionResult Delete(int id)

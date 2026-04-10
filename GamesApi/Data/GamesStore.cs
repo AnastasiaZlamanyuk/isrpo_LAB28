@@ -13,6 +13,7 @@ public static class GamesStore
             Title = "The Elder Scrolls IV: Oblivion",
             Genre = "RPG",
             ReleaseYear = 2006,
+            IsFavourite = true,
         },
 new Game
         {
